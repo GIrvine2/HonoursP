@@ -30,6 +30,7 @@ public class HomeActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().signOut();
             Intent signout = new Intent(HomeActivity.this, MainActivity.class);
             startActivity(signout);
+            finish();
         });
 
     }
