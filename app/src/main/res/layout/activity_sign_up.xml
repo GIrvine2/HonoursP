@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:screenOrientation="locked"
     android:background="@color/ic_channel_background"
     tools:context=".SignUpActivity">
 
@@ -39,7 +40,7 @@
         android:id="@+id/tvnoAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Back to login page"
+        android:text="Already have an account? Log in"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

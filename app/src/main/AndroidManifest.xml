@@ -9,10 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HonoursProject">
-        <activity android:name=".HomeActivity"></activity>
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoadingScreen">
+        <activity android:name=".HomeActivity"
+            android:screenOrientation="locked"></activity>
+        <activity android:name=".SignUpActivity"
+            android:screenOrientation="locked"/>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="locked"/>
+        <activity android:name=".LoadingScreen"
+            android:screenOrientation="locked">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
