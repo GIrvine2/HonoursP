@@ -14,4 +14,9 @@
         <!-- Customize your theme here. -->
         <item name="android:windowFullscreen">true</item>
     </style>
+
+    <style name="RatingBar">
+        <item name="colorControlActivated">@android:color/holo_orange_dark</item>
+        <item name="colorControlNormal">@android:color/holo_green_light</item>
+    </style>
 </resources>
