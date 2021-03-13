@@ -37,63 +37,54 @@ public class MainActivity extends AppCompatActivity {
         loginBtn = findViewById(R.id.loginBtn);
         tvnoAccount = findViewById(R.id.tvnoAccount);
 
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
-                if(mFirebaseUser != null) {
-                    //Toast.makeText(MainActivity.this, "You are logged in", Toast.LENGTH_SHORT).show();
-                    Intent home = new Intent(MainActivity.this, HomeActivity.class);
-                    startActivity(home);
-                    finish();
-                }
-                else {
-                    Toast.makeText(MainActivity.this, "Please Login", Toast.LENGTH_SHORT).show();
-
-                }
-
+        mAuthStateListener = firebaseAuth -> {
+            FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
+            if(mFirebaseUser != null) {
+                Intent home = new Intent(MainActivity.this, HomeActivity.class);
+                startActivity(home);
+                finish();
             }
+            else {
+                Toast.makeText(MainActivity.this, "Please Login", Toast.LENGTH_SHORT).show();
+            }
+
         };
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        loginBtn.setOnClickListener(v -> {
 
-                String email = loginEmail.getText().toString();
-                String pw = loginPassword.getText().toString();
-                if(email.isEmpty()) {
-                    loginEmail.setError("Please enter a email");
-                    loginEmail.requestFocus();
-                }
-                else if(pw.isEmpty()) {
-                    loginPassword.setError("Please enter a password");
-                    loginPassword.requestFocus();
-                }
-                else if(email.isEmpty() && pw.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Enter email and password", Toast.LENGTH_SHORT).show();
+            String email = loginEmail.getText().toString();
+            String pw = loginPassword.getText().toString();
+            if(email.isEmpty()) {
+                loginEmail.setError("Please enter a email");
+                loginEmail.requestFocus();
+            }
+            else if(pw.isEmpty()) {
+                loginPassword.setError("Please enter a password");
+                loginPassword.requestFocus();
+            }
+            else if(email.isEmpty() && pw.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Enter email and password", Toast.LENGTH_SHORT).show();
 
-                }
+            }
 
-                else if(!(email.isEmpty() && pw.isEmpty())) {
-                    mAuth.signInWithEmailAndPassword(email, pw).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(!task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "Could not login, Try again!", Toast.LENGTH_SHORT).show();
-                            }
-                            else {
-                                Intent home = new Intent(MainActivity.this, HomeActivity.class);
-                                startActivity(home);
-                            }
-
+            else if(!(email.isEmpty() && pw.isEmpty())) {
+                mAuth.signInWithEmailAndPassword(email, pw).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(!task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, "Could not login, Try again!", Toast.LENGTH_SHORT).show();
                         }
-                    });
+                        else {
+                            Intent home = new Intent(MainActivity.this, HomeActivity.class);
+                            startActivity(home);
+                        }
 
-                }
-                else {
-                    Toast.makeText(MainActivity.this, "Error Occurred!", Toast.LENGTH_SHORT).show();
-                }
+                    }
+                });
+
+            }
+            else {
+                Toast.makeText(MainActivity.this, "Error Occurred!", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -1,8 +1,10 @@
 package com.example.honoursproject;
 
+import android.media.Image;
+
 public class Model {
 
-    String Restaurant, Location, About, eta;
+    String Restaurant, Location, About, eta, image;
     int rating;
 
     public String getRestaurant() {
@@ -24,4 +26,9 @@ public class Model {
     public int getRating() {
         return rating;
     }
+
+    public String getImage() {
+        return image;
+    }
+
 }

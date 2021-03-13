@@ -32,11 +32,14 @@ import java.util.ArrayList;
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private RecyclerView recyclerView;
+
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private DatabaseReference root = db.getReference().child("Restaurants");
+
     private MyAdapter adapter;
     private ArrayList<Model> list;
 
@@ -48,7 +51,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         drawer = findViewById(R.id.drawer_layout);
         recyclerView = findViewById(R.id.recyclerView);
+
         list = new ArrayList<>();
+
         recyclerView.hasFixedSize();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyAdapter(this, list);
@@ -83,8 +88,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
-
-
     }
 
     @Override

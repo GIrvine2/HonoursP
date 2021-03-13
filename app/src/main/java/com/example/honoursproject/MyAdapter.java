@@ -1,8 +1,10 @@
 package com.example.honoursproject;
 
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -10,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.core.Context;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -42,26 +45,30 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         holder.location.setText(model.getLocation());
         holder.eta.setText(model.getEta());
         holder.ratingBar.setRating(model.getRating());
+        Picasso.get().load(model.getImage()).into(holder.rsImage);
 
+        System.out.println("Image URL " + model.getImage());
     }
 
     @Override
     public int getItemCount() {
+        System.out.println(List.size());
         return List.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView restaurants, location, deliveryPrice, eta;
         RatingBar ratingBar;
+        ImageView rsImage;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-
             restaurants = itemView.findViewById(R.id.restaurant_text);
             location = itemView.findViewById(R.id.location_text);
             deliveryPrice = itemView.findViewById(R.id.deliveryprice_text);
             eta = itemView.findViewById(R.id.eta_text);
             ratingBar = itemView.findViewById(R.id.ratingBar);
-
+            rsImage = itemView.findViewById(R.id.rsImage);
         }
     }
 }
