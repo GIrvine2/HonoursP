@@ -43,6 +43,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private MyAdapter adapter;
     private ArrayList<Model> list;
 
+    Button addBasket;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +53,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         drawer = findViewById(R.id.drawer_layout);
         recyclerView = findViewById(R.id.recyclerView);
+        addBasket = findViewById(R.id.addBasket);
 
+        //List used for Firebase Reference
         list = new ArrayList<>();
 
         recyclerView.hasFixedSize();
@@ -105,6 +109,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_home:
                 Intent home = new Intent(this, HomeActivity.class);
                 startActivity(home);
+                break;
+            case R.id.nav_basket:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new BasketFragment()).commit();
                 break;
             case R.id.nav_settings:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
