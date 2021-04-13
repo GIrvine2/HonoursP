@@ -1,28 +1,38 @@
 package com.example.honoursproject;
 
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.core.Context;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
 
     ArrayList<Model> List;
     HomeActivity context;
+    List<String> basket = new ArrayList<String>();
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String userID = user.getUid();
+
+    private FirebaseDatabase db = FirebaseDatabase.getInstance();
+    private DatabaseReference order = db.getReference().child("Basket");
 
     public MyAdapter(HomeActivity context, ArrayList<Model> List){
         this.List = List;
@@ -39,6 +49,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
         Model model = List.get(position);
         holder.restaurants.setText(model.getRestaurant());
         holder.deliveryPrice.setText(model.getAbout());
@@ -47,7 +58,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         holder.ratingBar.setRating(model.getRating());
         Picasso.get().load(model.getImage()).into(holder.rsImage);
 
-        System.out.println("Image URL " + model.getImage());
+        String restaurant = holder.restaurants.getText().toString();
+
+        holder.addBasket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(basket.contains(restaurant)) {
+                    Toast.makeText(context.getApplicationContext(),"Restaurant Already in Basket!",Toast.LENGTH_SHORT).show();
+                } else {
+                    basket.add(restaurant);
+                    order.child(userID).setValue(basket);
+                    System.out.println(basket);
+                }
+            }
+        });
+
+
     }
 
     @Override
@@ -60,6 +86,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         TextView restaurants, location, deliveryPrice, eta;
         RatingBar ratingBar;
         ImageView rsImage;
+        Button addBasket;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -69,6 +96,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             eta = itemView.findViewById(R.id.eta_text);
             ratingBar = itemView.findViewById(R.id.ratingBar);
             rsImage = itemView.findViewById(R.id.rsImage);
+            addBasket = itemView.findViewById(R.id.addBasket);
         }
     }
 }

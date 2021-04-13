@@ -39,6 +39,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private DatabaseReference root = db.getReference().child("Restaurants");
+    private DatabaseReference order = db.getReference().child("Orders");
 
     private MyAdapter adapter;
     private ArrayList<Model> list;
