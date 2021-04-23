@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -83,15 +84,31 @@ public class BasketFragment extends Fragment {
             }
         });
 
-
+        confirmBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (arrayList.isEmpty()) {
+                    Toast.makeText(getActivity(),"Your basket is empty!",Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent2 = new Intent(getActivity(), MapsActivity.class);
+                    startActivity(intent2);
+                }
+            }
+        });
 
 
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                order.removeValue();
-                Intent intent = new Intent(getActivity(), HomeActivity.class);
-                startActivity(intent);
+                if (arrayList.isEmpty()) {
+                    Toast.makeText(getActivity(),"Your basket is  already empty!",Toast.LENGTH_SHORT).show();
+                } else {
+                    order.removeValue();
+                    Intent intent = new Intent(getActivity(), HomeActivity.class);
+                    startActivity(intent);
+                }
+
+
             }
         });
 
