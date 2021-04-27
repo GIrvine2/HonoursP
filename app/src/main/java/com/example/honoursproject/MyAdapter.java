@@ -12,12 +12,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     ArrayList<Model> List;
     HomeActivity context;
     List<String> basket = new ArrayList<String>();
+    List<LatLng> locations = new ArrayList<LatLng>();
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String userID = user.getUid();
@@ -60,14 +63,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         String restaurant = holder.restaurants.getText().toString();
 
+        double lat = model.getLat();
+        double lng = model.getLng();
+
+        LatLng location = new LatLng(lat, lng);
         holder.addBasket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(basket.contains(restaurant)) {
                     Toast.makeText(context.getApplicationContext(),"Restaurant Already in Basket!",Toast.LENGTH_SHORT).show();
                 } else {
+
+                    locations.add(location);
+                    System.out.println(locations);
+
                     basket.add(restaurant);
-                    order.child(userID).setValue(basket);
+
+                    order.child(userID).child("Restaurant").setValue(basket);
+                    order.child(userID).child("Locations").setValue(locations);
                     System.out.println(basket);
                 }
             }

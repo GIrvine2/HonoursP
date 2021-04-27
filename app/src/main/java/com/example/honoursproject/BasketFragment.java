@@ -42,7 +42,7 @@ public class BasketFragment extends Fragment {
     ArrayAdapter<String> arrayAdapter;
 
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
-    private DatabaseReference order = db.getReference().child("Basket").child(userID);
+    private DatabaseReference order = db.getReference().child("Basket").child(userID).child("Restaurant");
 
     @Nullable
     @Override

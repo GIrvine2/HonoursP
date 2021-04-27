@@ -2,10 +2,13 @@ package com.example.honoursproject;
 
 import android.media.Image;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Model {
 
     String Restaurant, Location, About, eta, image;
     int rating;
+    double lat, lng;
 
     public String getRestaurant() {
         return Restaurant;
@@ -25,6 +28,14 @@ public class Model {
 
     public int getRating() {
         return rating;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLng() {
+        return lng;
     }
 
     public String getImage() {

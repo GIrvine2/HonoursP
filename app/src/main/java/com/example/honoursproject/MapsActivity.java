@@ -1,23 +1,17 @@
 package com.example.honoursproject;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -25,8 +19,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONObject;
 
@@ -42,10 +41,21 @@ import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String userID = user.getUid();
+    ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
+
+    private FirebaseDatabase db = FirebaseDatabase.getInstance();
+    private DatabaseReference confirmedOrder = db.getReference().child("Basket").child(userID).child("Locations");
+
     private GoogleMap mMap;
     Button cancelBtn;
 
     MarkerOptions origin, destination;
+
+    //String for waypoints
+    String str_wp = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +69,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         origin = new MarkerOptions().position(new LatLng(57.149651, -2.099075)).title("Drivers Location");
-        destination = new MarkerOptions().position(new LatLng(57.154, -2.099074)).title("Your Location");
+        destination = new MarkerOptions().position(new LatLng(57.3646, -2.0730)).title("Your Location");
 
-        String url = getDirectionsUrl(origin.getPosition(), destination.getPosition());
 
-        DownloadTask downloadTask = new DownloadTask();
+        confirmedOrder.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                double lat = (double) snapshot.child("latitude").getValue();
+                double lng = (double) snapshot.child("longitude").getValue();
 
-        // Start downloading json data from Google Directions API
-        downloadTask.execute(url);
-        System.out.println(url);
+                LatLng location = new LatLng(lat, lng);
+                waypoints.add(location);
+                System.out.println(waypoints);
+
+                String url = getDirectionsUrl(origin.getPosition(), destination.getPosition());
+
+                DownloadTask downloadTask = new DownloadTask();
+
+                // Start downloading json data from Google Directions API
+                downloadTask.execute(url);
+                System.out.println(url);
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +148,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private String getDirectionsUrl(LatLng origin, LatLng destination) {
 
+
+        /**
+         * Checking how many restaurants the user has ordered from
+         * Solution code here is not great however after difficulties with another solution this was the only option
+         * Also because the URL needs waypoints in a specific way to process the request
+         */
+        if(waypoints.size() == 0 ) {
+            System.out.println("EQUAL 0 ");
+        }
+        if(waypoints.size() == 1) {
+            str_wp = "waypoints=" + waypoints.get(0).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "");
+            System.out.println(str_wp);
+        }
+        if(waypoints.size() == 2) {
+            str_wp = "waypoints="+waypoints.get(0).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "")
+            + "|" + waypoints.get(1).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "");
+            System.out.println(str_wp);
+        }
+        if(waypoints.size() == 3) {
+            str_wp = "waypoints="+waypoints.get(0).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "")
+                    + "|" + waypoints.get(1).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "")
+                    + "|" + waypoints.get(2).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "");
+            System.out.println(str_wp);
+        }
+        if(waypoints.size() == 4) {
+            str_wp = "waypoints="+waypoints.get(0).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "")
+                    + "|" + waypoints.get(1).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "")
+                    + "|" + waypoints.get(2).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "")
+                    + "|" + waypoints.get(3).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "");
+            System.out.println(str_wp);
+        }
+        if(waypoints.size() == 5) {
+            str_wp = "waypoints="+waypoints.get(0).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "")
+                    + "|" + waypoints.get(1).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "")
+                    + "|" + waypoints.get(2).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "")
+                    + "|" + waypoints.get(3).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "")
+                    + "|" + waypoints.get(4).toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "").replace(" ", "");
+            System.out.println(str_wp);
+        }
+
+
         // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
 
@@ -113,8 +198,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Setting mode
         String mode = "mode=driving";
 
+        String optimize = "optimizeWaypoints=true";
+
         // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + mode;
+        String parameters = str_origin + "&" + str_dest + "&" + str_wp + "&" + optimize + "&" + mode + "&";
 
         // Output format
         String output = "json";
@@ -199,8 +286,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     points.add(position);
                 }
 
+
                 lineOptions.addAll(points);
-                lineOptions.width(12);
+                lineOptions.width(10);
                 lineOptions.color(Color.RED);
                 lineOptions.geodesic(true);
 
@@ -208,8 +296,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             // Drawing polyline in the Google Map
             System.out.println(points.size());
-            if (points.size() != 0)
+            if (points.size() != 0) {
                 mMap.addPolyline(lineOptions);
+            }
+
 
         }
     }
@@ -230,4 +320,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(destination.getPosition(), 15));
     }
 
+    private String getWaypoints(ArrayList<LatLng> wp) {
+        for(LatLng waypoint:wp) {
+            String test = waypoint.toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "");
+            System.out.println(test);
+        }
+        return null; 
+    }
 }
