@@ -54,7 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     MarkerOptions origin, destination;
 
-    //String for waypoints
+    //String for waypoints URL
     String str_wp = "";
 
     @Override
@@ -320,11 +320,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(destination.getPosition(), 15));
     }
 
-    private String getWaypoints(ArrayList<LatLng> wp) {
-        for(LatLng waypoint:wp) {
-            String test = waypoint.toString().replace("lat/lng", "").replace(":", "").replace("(", "").replace(")", "");
-            System.out.println(test);
-        }
-        return null; 
-    }
 }
