@@ -4,6 +4,9 @@ import android.media.Image;
 
 import com.google.android.gms.maps.model.LatLng;
 
+/**
+ * Model.java used to retrieve data from firebase Database
+ */
 public class Model {
 
     String Restaurant, Location, About, eta, image;

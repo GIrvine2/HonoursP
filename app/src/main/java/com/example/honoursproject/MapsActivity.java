@@ -52,7 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     Button cancelBtn;
 
-    MarkerOptions origin, destination;
+    MarkerOptions userLocation, driver;
 
     //String for waypoints URL
     String str_wp = "";
@@ -68,8 +68,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        origin = new MarkerOptions().position(new LatLng(57.149651, -2.099075)).title("Drivers Location");
-        destination = new MarkerOptions().position(new LatLng(57.3646, -2.0730)).title("Your Location");
+        driver = new MarkerOptions().position(new LatLng(57.149651, -2.099075)).title("Drivers Location");
+        userLocation = new MarkerOptions().position(new LatLng(57.3646, -2.0730)).title("Your Location");
 
 
         confirmedOrder.addChildEventListener(new ChildEventListener() {
@@ -82,7 +82,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 waypoints.add(location);
                 System.out.println(waypoints);
 
-                String url = getDirectionsUrl(origin.getPosition(), destination.getPosition());
+                /**
+                 * Getting the directions URL, and beginning the task to download the route.
+                 * Code here should be improved in the future as it is called everytime a change is added into the firebase database
+                 * However for this solution it is okay as it does not affect the outcome in any way.
+                 */
+                String url = getUrl(userLocation.getPosition(), driver.getPosition());
 
                 DownloadTask downloadTask = new DownloadTask();
 
@@ -146,13 +151,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private String getDirectionsUrl(LatLng origin, LatLng destination) {
+    private String getUrl(LatLng origin, LatLng destination) {
 
 
         /**
          * Checking how many restaurants the user has ordered from
          * Solution code here is not great however after difficulties with another solution this was the only option
          * Also because the URL needs waypoints in a specific way to process the request
+         * Waypoints array should never equal 0 due to a check already being in place before the order is confirmed however it is double checked here again.
          */
         if(waypoints.size() == 0 ) {
             System.out.println("EQUAL 0 ");
@@ -189,24 +195,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
 
-        // Origin of route
+        // Origin
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
 
-        // Destination of route
+        // Destination
         String str_dest = "destination=" + destination.latitude + "," + destination.longitude;
 
-        // Setting mode
+        // Mode
         String mode = "mode=driving";
 
         String optimize = "optimizeWaypoints=true";
 
-        // Building the parameters to the web service
+        // Join Parameters for URL
         String parameters = str_origin + "&" + str_dest + "&" + str_wp + "&" + optimize + "&" + mode + "&";
 
         // Output format
         String output = "json";
 
-        // Building the url to the web service
+        // Create URL
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + "AIzaSyB09HSX1CZ0kBXHRe0HyIAHPHMyNu812L4";
 
         return url;
@@ -258,6 +264,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             try {
                 jObject = new JSONObject(jsonData[0]);
+                /**
+                 * DataParser.java and its function's used from an online source:
+                 * C1CTech,
+                 * Publication year [Unknown].
+                 * Title: Android GoogleMap Example to Draw Route Between Two Locations.
+                 * [online].
+                 * Available from: https://c1ctech.com/android-googlemap-example-to-draw-route-between-two-locations/
+                 * [Accessed: 26/04/2021].
+                 */
                 DataParser parser = new DataParser();
 
                 routes = parser.parse(jObject);
@@ -314,10 +329,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        //Creating google map and adding markers at userLocation and driver markers.
         mMap = googleMap;
-        mMap.addMarker(origin);
-        mMap.addMarker(destination);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(destination.getPosition(), 15));
+        mMap.addMarker(userLocation);
+        mMap.addMarker(driver);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation.getPosition(), 15)); //Zoom into userLocation
     }
 
 }

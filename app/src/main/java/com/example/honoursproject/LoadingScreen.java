@@ -8,6 +8,10 @@ import android.view.View;
 
 import gr.net.maroulis.library.EasySplashScreen;
 
+/**
+ * LoadingScreen activity implements the EasySplashScreen to create a loading screen for the app.
+ * Uses the App logo as the main image for the loading screen
+ */
 public class LoadingScreen extends AppCompatActivity {
 
     @Override

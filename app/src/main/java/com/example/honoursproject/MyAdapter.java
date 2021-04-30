@@ -23,8 +23,11 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter for RecylcerView
+ * Used to display restaurant information and allow them to add restaurants to basket
+ */
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-
 
     ArrayList<Model> List;
     HomeActivity context;
@@ -63,25 +66,26 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         String restaurant = holder.restaurants.getText().toString();
 
-        double lat = model.getLat();
-        double lng = model.getLng();
+        double lat = model.getLat(); //Get Latitute coordinate from Firebase
+        double lng = model.getLng(); //Get longtitute coordinate from Firebase
 
-        LatLng location = new LatLng(lat, lng);
+        LatLng location = new LatLng(lat, lng); //Create new location based on what restaurant the user has selected
+
         holder.addBasket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(basket.contains(restaurant)) {
-                    Toast.makeText(context.getApplicationContext(),"Restaurant Already in Basket!",Toast.LENGTH_SHORT).show();
+                if(basket.contains(restaurant) || basket.size() == 5) { //Check that the users basket isn't full or doesnt already contain the restaurant they have clicked
+                    Toast.makeText(context.getApplicationContext(),restaurant + " Already added to Basket or Basket is Full!",Toast.LENGTH_SHORT).show();
                 } else {
 
-                    locations.add(location);
-                    System.out.println(locations);
+                    locations.add(location); //Add location to locations Array
 
-                    basket.add(restaurant);
+                    basket.add(restaurant); //Add restaurant to basket array
 
-                    order.child(userID).child("Restaurant").setValue(basket);
-                    order.child(userID).child("Locations").setValue(locations);
-                    System.out.println(basket);
+                    order.child(userID).child("Restaurant").setValue(basket); //Set Restaurant array along with user ID to firebase
+                    order.child(userID).child("Locations").setValue(locations); //Set Locations array to firebase with user ID also
+
+                    Toast.makeText(context.getApplicationContext(),restaurant + " Added to basket!",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -91,7 +95,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     @Override
     public int getItemCount() {
-        System.out.println(List.size());
         return List.size();
     }
 

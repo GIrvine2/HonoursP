@@ -17,6 +17,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * MainActivity is the login activity, allows users to login to the app and also navigates to the SignUpActivity
+ */
 public class MainActivity extends AppCompatActivity {
 
     EditText loginEmail, loginPassword;

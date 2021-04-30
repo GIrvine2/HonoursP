@@ -29,20 +29,25 @@ import com.google.firebase.database.ValueEventListener;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+
+/**
+ * HomeActivity is the first Activity users will be brought to upon signing in.
+ * Displays all of the restaurants information from the firebase realtime database.
+ */
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private DrawerLayout drawer;
+    private DrawerLayout drawer; //Side Navigation Drawer
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth; //Firebase Authentication
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerView; //RecyclerView to display restaurants information into
 
-    private FirebaseDatabase db = FirebaseDatabase.getInstance();
-    private DatabaseReference root = db.getReference().child("Restaurants");
+    private FirebaseDatabase db = FirebaseDatabase.getInstance(); //Get Database Instance
+    private DatabaseReference root = db.getReference().child("Restaurants"); //Along with both restaurants & orders child
     private DatabaseReference order = db.getReference().child("Orders");
 
-    private MyAdapter adapter;
-    private ArrayList<Model> list;
+    private MyAdapter adapter; //RecyclerView adapter
+    private ArrayList<Model> list; //ArrayList to retrieve data from Model.java
 
     Button addBasket;
 
@@ -59,6 +64,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //List used for Firebase Reference
         list = new ArrayList<>();
 
+        //RecyclerView settings
         recyclerView.hasFixedSize();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyAdapter(this, list);
@@ -68,11 +74,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Get currently logged in user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        //Get Users email address
         String userid = user.getEmail();
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(userid);
+        getSupportActionBar().setTitle(userid); //User email address displayed at top of application
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -106,6 +114,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        //Used to allow users to navigate throughout the app
         switch (item.getItemId()) {
             case R.id.nav_home:
                 Intent home = new Intent(this, HomeActivity.class);

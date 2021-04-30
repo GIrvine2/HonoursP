@@ -10,6 +10,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * DataParser.java and its function's used from an online source:
+ * C1CTech,
+ * Publication year [Unknown].
+ * Title: Android GoogleMap Example to Draw Route Between Two Locations.
+ * [online].
+ * Available from: https://c1ctech.com/android-googlemap-example-to-draw-route-between-two-locations/
+ * [Accessed: 26/04/2021].
+ */
 public class DataParser {
 
     /**

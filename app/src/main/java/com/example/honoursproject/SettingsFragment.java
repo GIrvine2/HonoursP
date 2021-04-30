@@ -10,6 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+
+/**
+ * SettingsFragment not implemented yet
+ * Would be used as a starting point for future work
+ * Could be used to allow users to change certain accessibility settings, eg. Text Size, Colours, Language Settings.
+ */
 public class SettingsFragment extends Fragment {
 
     @Nullable
