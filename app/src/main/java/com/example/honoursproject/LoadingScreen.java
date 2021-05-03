@@ -21,7 +21,7 @@ public class LoadingScreen extends AppCompatActivity {
         EasySplashScreen config = new EasySplashScreen(LoadingScreen.this)
                 .withFullScreen()
                 .withTargetActivity(MainActivity.class)
-                .withSplashTimeOut(3000)
+                .withSplashTimeOut(10000)
                 .withBackgroundColor(Color.BLUE)
                 .withLogo(R.mipmap.ic_channel);
 

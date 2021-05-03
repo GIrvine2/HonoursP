@@ -87,7 +87,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                  * Code here should be improved in the future as it is called everytime a change is added into the firebase database
                  * However for this solution it is okay as it does not affect the outcome in any way.
                  */
-                String url = getUrl(userLocation.getPosition(), driver.getPosition());
+                String url = getUrl(driver.getPosition(), userLocation.getPosition());
 
                 DownloadTask downloadTask = new DownloadTask();
 
